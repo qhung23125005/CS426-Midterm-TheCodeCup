@@ -1,4 +1,5 @@
-import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
+import { router } from 'expo-router';
+import { Dimensions, Image, Pressable, StyleSheet, Text } from 'react-native';
 
 interface CoffeeProduct {
     url: string;
@@ -11,11 +12,13 @@ const itemWidth = width * 0.3; // 40% of the screen width
 export default function CoffeeProduct({url, name}: CoffeeProduct) {
 
     return (
-        <View style={styles.container}>
+        <Pressable
+            onPress ={() => router.push({pathname: '/details', params: { name: name }})} 
+            style={styles.container}>
             <Image source={{uri: url} } style={styles.image} resizeMode='contain' />
             <Text style={styles.productName}>{name}</Text>
             
-        </View>
+        </Pressable>
     );
 
 }
