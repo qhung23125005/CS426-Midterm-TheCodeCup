@@ -1,6 +1,6 @@
 import LoyaltyCard from '@/components/Homescreen/LoyaltyCard';
 import { Ionicons } from '@expo/vector-icons';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { Colors } from '../../constants/Colors';
 
 export default function HomeScreen() {
@@ -22,11 +22,9 @@ export default function HomeScreen() {
       </View>
       <LoyaltyCard status={2} />
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Image
-          source={require('@/assets/images/Kidaodo.jpg')}
-          style={{ width: 400, height: 400, marginTop: '5%' }}
-          //resizeMode="contain"
-        />
+        <Text style={{ fontSize: 18, color: Colors.welcomeText.userName }}>
+          Welcome to The Code Cup!
+        </Text>
       </View>
     </View>
   );
