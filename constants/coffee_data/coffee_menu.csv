@@ -1,0 +1,5 @@
+id,created_at,coffee_name,price,image_url
+1,2025-06-27T10:57:29.103407,Americano,2.5,https://bwswzuguddiunzmryztd.supabase.co/storage/v1/object/public/coffeeimage//Americano.png
+2,2025-06-27T10:57:29.103418,Capuchino,3.0,https://bwswzuguddiunzmryztd.supabase.co/storage/v1/object/public/coffeeimage//Capuchino.png
+3,2025-06-27T10:57:29.103420,Mocha,3.5,https://bwswzuguddiunzmryztd.supabase.co/storage/v1/object/public/coffeeimage//Mocha.png
+4,2025-06-27T10:57:29.103422,Flat White,3.2,https://bwswzuguddiunzmryztd.supabase.co/storage/v1/object/public/coffeeimage//FlatWhite.png
