@@ -8,7 +8,7 @@ export default function TabLayout() {
         headerShown: false,
         tabBarShowLabel: false,
         tabBarStyle: {
-          borderRadius: 15,
+          borderRadius: 20,
           height: '8%',
           paddingBottom: 10,
           backgroundColor: 'white', // Use the dark blue color from Colors
@@ -20,21 +20,21 @@ export default function TabLayout() {
           justifyContent: 'center',
           flex: 1, // makes icon take full height of the tab bar item
         },
-        tabBarIcon: ({ color, size }) => {
+        tabBarIcon: ({ color, size, focused }) => {
           let iconName = 'home-outline';
 
           if (route.name === 'index') iconName = 'home-outline';
-          else if (route.name === 'order') iconName = 'reader-outline';
+          else if (route.name === 'MyOrders') iconName = 'reader-outline';
           else if (route.name === 'history') iconName = 'calendar-outline';
 
-          return <Ionicons name={iconName} size={size} color={'black'} />;
+          return <Ionicons name={iconName} size={size} color={'black'} style={{ opacity: focused ? 1 : 0.3 }} />;
         },
         tabBarActiveTintColor: 'black',
         tabBarInactiveTintColor: 'black',
       })}
     >
       <Tabs.Screen name="index" options={{ title: 'Home' }} />
-      <Tabs.Screen name="order" options={{ title: 'Order' }} />
+      <Tabs.Screen name="MyOrders" options={{ title: 'MyOrdersScreen' }} />
       <Tabs.Screen name="history" options={{ title: 'History' }} />
     </Tabs>
   );
