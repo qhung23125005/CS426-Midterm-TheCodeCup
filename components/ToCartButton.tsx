@@ -12,7 +12,7 @@ export default function ToCartButton({ size = 24, color = 'black', style = {} }:
   const router = useRouter();
 
   return (
-    <Pressable onPress={() => router.push('/cart')} style={style}>
+    <Pressable onPress={() => router.push('/Cart')} style={style}>
       <Ionicons name="cart-outline" size={size} color={color} />
     </Pressable>
   );

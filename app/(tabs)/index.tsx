@@ -1,12 +1,12 @@
 import CoffeeProduct from '@/components/Homescreen/CoffeeProduct';
 import LoyaltyCard from '@/components/Homescreen/LoyaltyCard';
+import ToCartButton from '@/components/ToCartButton';
 import { signInAnonymously } from '@/services/Auth'; // Import the signInAnonymously function
 import { getCoffeeProduct } from '@/services/GetCoffeeProduct';
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Colors } from '../../constants/Colors';
-
 interface CoffeeProduct {
   url: string;
   name: string;
@@ -37,7 +37,7 @@ export default function HomeScreen() {
           <Text style = {styles.userNameText}> {userName} </Text>
         </View>
         <View style={ styles.IconContainer}>
-          <Ionicons name="cart-outline" size={24} color="black" />
+          <ToCartButton size={24} color="black" />
           <Ionicons name="person-outline" size={24} color="black" style={{ marginLeft: 20 }} />
         </View>
       </View>
