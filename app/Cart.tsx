@@ -1,7 +1,7 @@
 import BackButton from '@/components/BackButton';
 import CartItemCard from '@/components/Cart/CartItemCard';
 import CheckoutButton from '@/components/Cart/CheckOutButton';
-import { useCartStore } from '@/services/CartStore';
+import { useCartStore } from '@/services/store/CartStore';
 import React from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 

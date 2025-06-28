@@ -6,7 +6,7 @@ import SelectSizeComponent from '@/components/Details/SelectSize';
 import SelectTypeComponent from '@/components/Details/SelectType';
 import ShotComponent from '@/components/Details/Shot';
 import ToCartButton from '@/components/ToCartButton';
-import { useCartStore } from '@/services/CartStore';
+import { useCartStore } from '@/services/store/CartStore';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
@@ -49,6 +49,7 @@ export default function CoffeeDetails() {
                 <ToCartButton
                     size={24}
                     color="black"
+            
                 />
             </View>
             <View style={{justifyContent: 'center', alignItems: 'center' }}>
