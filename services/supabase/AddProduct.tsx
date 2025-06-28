@@ -9,7 +9,7 @@ coffee_name
 quantity
 */
 
-export async function addOrderToDatabase(item: CartItem, point: number): Promise<void> {
+export async function addOrderToDatabase(item: CartItem): Promise<void> {
   try {
     const user_id = await supabase.auth.getUser().then(({ data }) => data.user?.id);
     const { data, error } = await supabase
