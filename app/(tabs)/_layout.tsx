@@ -13,7 +13,8 @@ export default function TabLayout() {
           paddingBottom: 10,
           backgroundColor: 'white', // Use the dark blue color from Colors
           marginHorizontal: '5%',
-          marginBottom: '5%',
+          marginBottom: '2%',
+          position: 'absolute',
         },
         tabBarIconStyle: {
           alignItems: 'center',

@@ -36,7 +36,7 @@ export default function HomeScreen() {
 
   }, []);
   return (
-    <View style={{ flex: 1, padding: '3%'}}>
+    <View style={{ flex: 1}}>
       <View style={styles.TopContainer}>
         <View style={styles.welcomeContainer}>
           <Text style = {styles.welcomeText}> Good morning </Text>
@@ -52,7 +52,7 @@ export default function HomeScreen() {
         <Text style={{ color: 'white', fontSize: 14, marginBottom: '5%', marginLeft: '2%' }}> 
           Choose your coffee
         </Text>
-        <ScrollView showsVerticalScrollIndicator={true}>
+        <ScrollView showsVerticalScrollIndicator={true} style = {{marginBottom:'12%'}}>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}>
           {coffeeList.map((coffee, index) => (
             <CoffeeProduct key={index} url={coffee.url} name={coffee.name} />
@@ -91,7 +91,8 @@ const styles = StyleSheet.create({
   productContainer: {
     flex: 1,
     backgroundColor: Colors.ThemeColor.darkBlue,
-    borderRadius: 15,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
     padding: 10,
     marginTop: '5%',
     alignItems: 'flex-start',
