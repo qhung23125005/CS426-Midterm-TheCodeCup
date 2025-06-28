@@ -18,18 +18,24 @@ export default function HomeScreen() {
   const [coffeeList, setCoffeeList] = useState<CoffeeProduct[]>([]);
   const [userName, setUserName] = useState<string | null>("Guest");
   const [loyaltyStatus, setLoyaltyStatus] = useState<number>(0); // Assuming loyalty status is a number
+  const [canOrder, setCanOrder] = useState<boolean>(false); // State to track if the user can order
+  const init = async () => {
+    const data1 = await signInAnonymously(); // ✅ get user ID
+    
+    const userInfo = await getUserInformation(); // ✅ get user information
+    setUserName(userInfo.userName || "Guest"); // Set user name or default to "Guest"
+    setLoyaltyStatus(userInfo.loyaltyPoints || 0); // Set loyalty points or default to 0
+    
+    if (userInfo.email && userInfo.email !== '') {
+      setCanOrder(true); // If the user has an email, they can order
+      console.log("User can order:", userInfo.email);
+    }
 
-    const init = async () => {
-      const data1 = await signInAnonymously(); // ✅ get user ID
-      
-      const userInfo = await getUserInformation(); // ✅ get user information
-      setUserName(userInfo.userName || "Guest"); // Set user name or default to "Guest"
-      setLoyaltyStatus(userInfo.loyaltyPoints || 0); // Set loyalty points or default to 0
-      
-      const data2 = await getCoffeeProduct();
-      setCoffeeList(data2);
-    };
-    init();
+    const data2 = await getCoffeeProduct();
+    setCoffeeList(data2);
+  };
+  init();
+
   return (
     <View style={{ flex: 1}}>
       <View style={styles.TopContainer}>
@@ -50,7 +56,7 @@ export default function HomeScreen() {
         <ScrollView showsVerticalScrollIndicator={true} style = {{marginBottom:'12%'}}>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}>
           {coffeeList.map((coffee, index) => (
-            <CoffeeProduct key={index} url={coffee.url} name={coffee.name} price = {coffee.price} />
+            <CoffeeProduct key={index} url={coffee.url} name={coffee.name} price = {coffee.price} canOrder = {canOrder} />
           ))}
         </View>
         </ScrollView>

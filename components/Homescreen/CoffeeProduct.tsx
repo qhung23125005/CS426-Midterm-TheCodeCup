@@ -5,16 +5,23 @@ interface CoffeeProduct {
     url: string;
     name: string;
     price: number;
+    canOrder?: boolean; // Optional prop to indicate if the user can order
 }
 
 const { width } = Dimensions.get('window');
 const itemWidth = width * 0.3; // 40% of the screen width
 
-export default function CoffeeProduct({url, name, price}: CoffeeProduct) {
+export default function CoffeeProduct({url, name, price, canOrder}: CoffeeProduct) {
 
     return (
         <Pressable
-            onPress ={() => router.push({pathname: '/details', params: { name: name, url: url, price: price }})} 
+            onPress ={() => {
+                if (!canOrder) {
+                    alert('Please go to Profile and fill information to order');
+                    return;
+                }
+                router.push({pathname: '/details', params: { name: name, url: url, price: price }})
+            }} 
             style={styles.container}>
             <Image source={{uri: url} } style={styles.image} resizeMode='contain' />
             <Text style={styles.productName}>{name}</Text>
