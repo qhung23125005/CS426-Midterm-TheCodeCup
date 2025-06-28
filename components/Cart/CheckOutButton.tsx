@@ -12,6 +12,10 @@ const CheckoutButton = () => {
   return (
     <Pressable style={styles.button} 
       onPress={() => {
+        if (cartItems.length === 0) {
+          alert('Your cart is empty. Please add items to your cart before checking out.');
+          return;
+        }
         cartItems.forEach((item) => {
           addOrderToDatabase(item).catch((error) => {
             console.error('Error adding order to database:', error);
