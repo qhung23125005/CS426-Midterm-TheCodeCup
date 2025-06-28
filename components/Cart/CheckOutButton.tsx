@@ -12,7 +12,6 @@ const CheckoutButton = () => {
   return (
     <Pressable style={styles.button} 
       onPress={() => {
-        router.push('/OrderSuccess');
         cartItems.forEach((item) => {
           addOrderToDatabase(item).catch((error) => {
             console.error('Error adding order to database:', error);
@@ -20,6 +19,8 @@ const CheckoutButton = () => {
         });
         useCartStore.getState().clearCart(); // Clear the cart after checkout
         console.log('Checkout successful, cart cleared');
+        router.navigate('/OrderSuccess');
+
      }}>
       <Ionicons name="cart-outline" size={20} color="#fff" style={{ marginRight: 8 }} />
       <Text style={styles.text}>Checkout</Text>
