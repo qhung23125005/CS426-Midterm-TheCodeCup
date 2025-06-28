@@ -1,8 +1,8 @@
 import CoffeeProduct from '@/components/Homescreen/CoffeeProduct';
 import LoyaltyCard from '@/components/Homescreen/LoyaltyCard';
 import ToCartButton from '@/components/ToCartButton';
-import { signInAnonymously } from '@/services/Auth'; // Import the signInAnonymously function
-import { getCoffeeProduct } from '@/services/GetCoffeeProduct';
+import { signInAnonymously } from '@/services/supabase/Auth'; // Import the signInAnonymously function
+import { getCoffeeProduct } from '@/services/supabase/GetCoffeeProduct';
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';

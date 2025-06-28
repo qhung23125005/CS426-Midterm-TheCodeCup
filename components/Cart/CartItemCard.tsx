@@ -1,4 +1,4 @@
-import { CartItem, useCartStore } from '@/services/supabase/CartStore';
+import { CartItem, useCartStore } from '@/services/store/CartStore';
 import { Ionicons } from '@expo/vector-icons';
 import { Dimensions, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
