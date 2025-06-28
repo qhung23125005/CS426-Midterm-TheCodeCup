@@ -4,20 +4,20 @@ import { Dimensions, Image, Pressable, StyleSheet, Text } from 'react-native';
 interface CoffeeProduct {
     url: string;
     name: string;
+    price: number;
 }
 
 const { width } = Dimensions.get('window');
 const itemWidth = width * 0.3; // 40% of the screen width
 
-export default function CoffeeProduct({url, name}: CoffeeProduct) {
+export default function CoffeeProduct({url, name, price}: CoffeeProduct) {
 
     return (
         <Pressable
-            onPress ={() => router.push({pathname: '/details', params: { name: name }})} 
+            onPress ={() => router.push({pathname: '/details', params: { name: name, url: url, price: price }})} 
             style={styles.container}>
             <Image source={{uri: url} } style={styles.image} resizeMode='contain' />
             <Text style={styles.productName}>{name}</Text>
-            
         </Pressable>
     );
 
