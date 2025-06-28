@@ -1,13 +1,26 @@
+import { useCartStore, } from '@/services/store/CartStore';
+import { addOrderToDatabase } from '@/services/supabase/AddProduct';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { Pressable, StyleSheet, Text } from 'react-native';
 
+
 const CheckoutButton = () => {
   const router = useRouter();
-
+  const cartItems = useCartStore((state) => state.items);
   return (
-    <Pressable style={styles.button} onPress={() => router.push('/checkout')}>
+    <Pressable style={styles.button} 
+      onPress={() => {
+        router.push('/OrderSuccess');
+        cartItems.forEach((item) => {
+          addOrderToDatabase(item).catch((error) => {
+            console.error('Error adding order to database:', error);
+          });
+        });
+        useCartStore.getState().clearCart(); // Clear the cart after checkout
+        console.log('Checkout successful, cart cleared');
+     }}>
       <Ionicons name="cart-outline" size={20} color="#fff" style={{ marginRight: 8 }} />
       <Text style={styles.text}>Checkout</Text>
     </Pressable>
