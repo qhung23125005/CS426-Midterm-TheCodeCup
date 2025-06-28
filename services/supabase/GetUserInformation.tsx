@@ -13,6 +13,7 @@ export async function getUserInformation() {
       throw error;
     }
     const mappedData =  {
+        uid: user_id || null, // Ensure user_id is not undefined
         userName: data.username || null,
         phone_number: data.phone_number || null,
         email: data.email || null,
