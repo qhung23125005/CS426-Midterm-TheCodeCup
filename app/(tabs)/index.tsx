@@ -1,10 +1,11 @@
 import CoffeeProduct from '@/components/Homescreen/CoffeeProduct';
 import LoyaltyCard from '@/components/Homescreen/LoyaltyCard';
 import ToCartButton from '@/components/ToCartButton';
+import ToProfileButton from '@/components/ToProfileButton';
 import { signInAnonymously } from '@/services/supabase/Auth'; // Import the signInAnonymously function
 import { getCoffeeProduct } from '@/services/supabase/GetCoffeeProduct';
-import { Ionicons } from '@expo/vector-icons';
-import { useEffect, useState } from 'react';
+import { getUserInformation } from '@/services/supabase/GetUserInformation';
+import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Colors } from '../../constants/Colors';
 interface CoffeeProduct {
@@ -16,19 +17,19 @@ interface CoffeeProduct {
 export default function HomeScreen() {
   const [coffeeList, setCoffeeList] = useState<CoffeeProduct[]>([]);
   const [userName, setUserName] = useState<string | null>("Guest");
+  const [loyaltyStatus, setLoyaltyStatus] = useState<number>(0); // Assuming loyalty status is a number
 
-  useEffect(() => {
     const init = async () => {
-      const name = await signInAnonymously(); // ✅ get user ID
-      try {
-        const data = await getCoffeeProduct();
-        setCoffeeList(data);
-      } catch (err) {
-        console.error('Failed to load coffee list:', err);
-      }
+      const data1 = await signInAnonymously(); // ✅ get user ID
+      
+      const userInfo = await getUserInformation(); // ✅ get user information
+      setUserName(userInfo.userName || "Guest"); // Set user name or default to "Guest"
+      setLoyaltyStatus(userInfo.loyaltyPoints || 0); // Set loyalty points or default to 0
+      
+      const data2 = await getCoffeeProduct();
+      setCoffeeList(data2);
     };
     init();
-  }, []);
   return (
     <View style={{ flex: 1}}>
       <View style={styles.TopContainer}>
@@ -37,11 +38,11 @@ export default function HomeScreen() {
           <Text style = {styles.userNameText}> {userName} </Text>
         </View>
         <View style={ styles.IconContainer}>
-          <ToCartButton size={24} color="black" />
-          <Ionicons name="person-outline" size={24} color="black" style={{ marginLeft: 20 }} />
+          <ToCartButton size={24} color="black" style = {{marginRight: '10%'}} />
+          <ToProfileButton size = {24} color = "black"  />
         </View>
       </View>
-      <LoyaltyCard status={2} />
+      <LoyaltyCard status={loyaltyStatus} />
       <View style={styles.productContainer}>
         <Text style={{ color: 'white', fontSize: 14, marginBottom: '5%', marginLeft: '2%' }}> 
           Choose your coffee
@@ -73,6 +74,8 @@ const styles = StyleSheet.create({
   IconContainer: {
     marginRight: '2%',
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   welcomeText: {
     color: Colors.welcomeText.welcome,
