@@ -5,9 +5,11 @@ import ToProfileButton from '@/components/ToProfileButton';
 import { signInAnonymously } from '@/services/supabase/Auth'; // Import the signInAnonymously function
 import { getCoffeeProduct } from '@/services/supabase/GetCoffeeProduct';
 import { getUserInformation } from '@/services/supabase/GetUserInformation';
-import { useState } from 'react';
+import { useIsFocused } from '@react-navigation/native';
+import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Colors } from '../../constants/Colors';
+
 interface CoffeeProduct {
   url: string;
   name: string;
@@ -19,23 +21,24 @@ export default function HomeScreen() {
   const [userName, setUserName] = useState<string | null>("Guest");
   const [loyaltyStatus, setLoyaltyStatus] = useState<number>(0); // Assuming loyalty status is a number
   const [canOrder, setCanOrder] = useState<boolean>(false); // State to track if the user can order
-  const init = async () => {
-    const data1 = await signInAnonymously(); // ✅ get user ID
-    
-    const userInfo = await getUserInformation(); // ✅ get user information
-    setUserName(userInfo.userName || "Guest"); // Set user name or default to "Guest"
-    setLoyaltyStatus(userInfo.loyaltyPoints || 0); // Set loyalty points or default to 0
-    
-    if (userInfo.email && userInfo.email !== '') {
-      setCanOrder(true); // If the user has an email, they can order
-      console.log("User can order:", userInfo.email);
-    }
+  const isFocused = useIsFocused();
 
-    const data2 = await getCoffeeProduct();
-    setCoffeeList(data2);
-  };
-  init();
+  useEffect(() => {
+    if (!isFocused) return;
 
+    const init = async () => {
+      await signInAnonymously();
+
+      const userInfo = await getUserInformation();
+      setUserName(userInfo.userName || 'Guest');
+      setLoyaltyStatus(userInfo.loyaltyPoints || 0);
+      setCanOrder(!!userInfo.email); // true if email exists
+      const data = await getCoffeeProduct();
+      setCoffeeList(data);
+    };
+
+    init();
+  }, [isFocused]);
   return (
     <View style={{ flex: 1}}>
       <View style={styles.TopContainer}>
