@@ -1,5 +1,6 @@
 import CoffeeProduct from '@/components/Homescreen/CoffeeProduct';
 import LoyaltyCard from '@/components/Homescreen/LoyaltyCard';
+import { signInAnonymously } from '@/services/Auth'; // Import the signInAnonymously function
 import { getCoffeeProduct } from '@/services/GetCoffeeProduct';
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
@@ -9,38 +10,31 @@ import { Colors } from '../../constants/Colors';
 interface CoffeeProduct {
   url: string;
   name: string;
+  price: number;
 }
 
 export default function HomeScreen() {
   const [coffeeList, setCoffeeList] = useState<CoffeeProduct[]>([]);
-
-  const getName = () => {
-    return 'Anonymous';
-  };
+  const [userName, setUserName] = useState<string | null>("Guest");
 
   useEffect(() => {
-    async function fetchData() {
+    const init = async () => {
+      const name = await signInAnonymously(); // ✅ get user ID
       try {
         const data = await getCoffeeProduct();
-        const mappedData = data.map((item: { coffee_name: string; image_url: string }) => ({
-          name: item.coffee_name,
-          url: item.image_url,
-        }));
-        setCoffeeList(mappedData);
+        setCoffeeList(data);
       } catch (err) {
         console.error('Failed to load coffee list:', err);
       }
-    }
-
-  fetchData();
-
+    };
+    init();
   }, []);
   return (
     <View style={{ flex: 1}}>
       <View style={styles.TopContainer}>
         <View style={styles.welcomeContainer}>
           <Text style = {styles.welcomeText}> Good morning </Text>
-          <Text style = {styles.userNameText}> {getName()} </Text>
+          <Text style = {styles.userNameText}> {userName} </Text>
         </View>
         <View style={ styles.IconContainer}>
           <Ionicons name="cart-outline" size={24} color="black" />
@@ -55,7 +49,7 @@ export default function HomeScreen() {
         <ScrollView showsVerticalScrollIndicator={true} style = {{marginBottom:'12%'}}>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}>
           {coffeeList.map((coffee, index) => (
-            <CoffeeProduct key={index} url={coffee.url} name={coffee.name} />
+            <CoffeeProduct key={index} url={coffee.url} name={coffee.name} price = {coffee.price} />
           ))}
         </View>
         </ScrollView>
