@@ -1,7 +1,7 @@
 import { supabase } from '@/utils/supabase';
 
 export async function updateUserInfo(
-    field: 'Full name' | 'Phone number' | 'Email' | 'Address',
+    field: 'Full name' | 'Phone number' | 'Email' | 'Address' | 'User points',
     value: string
 ): Promise<void> {
     try {
@@ -24,6 +24,13 @@ export async function updateUserInfo(
             case 'Address':
                 updates.address = value;
                 break;
+            case 'User points':
+                const points = parseInt(value, 10);
+                if (isNaN(points) || points < 0) {
+                    throw new Error('User loyalty points value');
+                }
+                updates.points = points;
+                break;  
             default:
                 throw new Error('Invalid field');
         }
