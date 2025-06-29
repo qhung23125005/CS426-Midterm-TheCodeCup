@@ -23,7 +23,7 @@ export default function CartItemCard({ cartItem }: Props) {
   } = cartItem;
 
   const deleteItemFromCart = useCartStore((state) => state.removeItem);
-
+  console.log('price', price);
   const getDetailDescription = () => {
     const details = [];
     if (shot) details.push(shot);
@@ -56,7 +56,7 @@ export default function CartItemCard({ cartItem }: Props) {
           <Text style={styles.subOptions}>{getDetailDescription()}</Text>
           <Text style={styles.quantity}>x{quantity}</Text>
         </View>
-        <Text style={styles.price}>${(price * quantity).toFixed(2)}</Text>
+        <Text style={styles.price}>${(price).toFixed(2)}</Text>
       </View>
     </Swipeable>
   );

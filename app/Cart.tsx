@@ -33,7 +33,7 @@ export default function CoffeeDetails() {
                         Total Price:
                     </Text>
                     <Text style={{ fontSize: 30, fontWeight: 'bold', marginRight: '5%' }}>
-                        ${cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2)}
+                        ${cartItems.reduce((total, item) => total + item.price, 0).toFixed(2)}
                     </Text>
                 </View>
                 <CheckoutButton />
