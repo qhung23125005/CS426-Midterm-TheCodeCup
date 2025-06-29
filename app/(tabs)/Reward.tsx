@@ -3,9 +3,12 @@ import PointsCard from '@/components/Reward/PointCard';
 import PointHistoryItem from '@/components/Reward/PointHistoryItem';
 import { getPointHistory } from '@/services/supabase/GetPointHistory'; // Import the function to fetch point history
 import { getUserInformation } from '@/services/supabase/GetUserInformation';
+import { useIsFocused } from '@react-navigation/native';
+import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+
 
 interface UserInfo {
     userName: string;
@@ -21,6 +24,7 @@ interface PointHistory {
 }
 
 export default function Reward() {
+    const isFocused = useIsFocused(); // Hook to check if the screen is focused
     const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
     const [pointHistory, setPointHistory] = useState<PointHistory[]>([]);
     useEffect(() => {
@@ -39,7 +43,7 @@ export default function Reward() {
         };
         fetchUserInfo();
     }
-    , []);
+    , [isFocused]);
     return (
         <View style={styles.container}>
             <View style={{ marginTop: '5%', alignItems: 'center' }}>
@@ -50,7 +54,7 @@ export default function Reward() {
                 points={userInfo?.userPoint || 0}
                 onRedeemPress={() => {
                     // Handle redeem action here
-                    console.log('Redeem button pressed');
+                    router.push('/Redeem'); // Assuming you have a navigation setup
                 }}
             />
             <View style={styles.historyContainer}>
