@@ -1,14 +1,73 @@
-import React from 'react';
+import LoyaltyCard from '@/components/LoyaltyCard';
+import PointsCard from '@/components/Reward/PointCard';
+import PointHistoryItem from '@/components/Reward/PointHistoryItem';
+import { getPointHistory } from '@/services/supabase/GetPointHistory'; // Import the function to fetch point history
+import { getUserInformation } from '@/services/supabase/GetUserInformation';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
+
+interface UserInfo {
+    userName: string;
+    email: string;
+    loyaltyPoints: number;
+    userPoint: number;
+}
+
+interface PointHistory {
+    description: string;
+    points: number;
+    date: string; // ISO format or Date string
+}
 
 export default function Reward() {
-  return (
-    <View style={styles.container}>
-        <View style={{ marginTop: '5%', alignItems: 'center' }}>
-            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Reward</Text>
+    const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+    const [pointHistory, setPointHistory] = useState<PointHistory[]>([]);
+    useEffect(() => {
+        // Fetch user information when the component mounts
+        const fetchUserInfo = async () => {
+            try {
+                const userInfo = await getUserInformation();
+                setUserInfo(userInfo);
+
+                const pointHistoryData = await getPointHistory(); // Assuming you have a function to fetch point history
+                setPointHistory(pointHistoryData);
+
+            } catch (error) {
+                console.error('Error fetching user information:', error);
+            }
+        };
+        fetchUserInfo();
+    }
+    , []);
+    return (
+        <View style={styles.container}>
+            <View style={{ marginTop: '5%', alignItems: 'center' }}>
+                <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Reward</Text>
+            </View>
+            <LoyaltyCard status={userInfo?.loyaltyPoints || 0} />
+            <PointsCard
+                points={userInfo?.userPoint || 0}
+                onRedeemPress={() => {
+                    // Handle redeem action here
+                    console.log('Redeem button pressed');
+                }}
+            />
+            <View style={styles.historyContainer}>
+                <Text style = {{fontSize: 18, fontWeight: 600}}>History Reward</Text>
+                <ScrollView showsVerticalScrollIndicator={true} style={{ marginTop: '5%', marginHorizontal: '5%' }}>
+                    {pointHistory.map((item, index) => (
+                        <PointHistoryItem
+                            key={index}
+                            description={item.description}
+                            points={item.points}
+                            timestamp={item.date}
+                        />
+                    ))}
+                </ScrollView>
+            </View>
         </View>
-    </View>
-  );
+    );
 }
 
 const styles = StyleSheet.create({
@@ -24,4 +83,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
   },
+  historyContainer: {
+    marginTop: '5%',
+    flex: 1,
+    marginBottom: '25%',
+    marginHorizontal: '5%',
+  }
 });
