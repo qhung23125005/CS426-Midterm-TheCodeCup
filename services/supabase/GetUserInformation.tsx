@@ -19,6 +19,7 @@ export async function getUserInformation() {
         email: data.email || null,
         loyaltyPoints: data.loyalty,
         address: data.address || null,
+        userPoint: data.points || 0, // Default to 0 if user_point is not available
     } ;
 
     return mappedData; // Return the user object
