@@ -1,6 +1,6 @@
 import React from 'react';
 import { ImageBackground, StyleSheet, Text, View } from 'react-native'; // Use fast image for better performance
-import { Colors } from '../../constants/Colors';
+import { Colors } from '../constants/Colors';
 
 // Props of LoyaltyCard component
 interface LoyaltyCardProps {

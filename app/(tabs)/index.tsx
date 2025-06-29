@@ -1,5 +1,5 @@
 import CoffeeProduct from '@/components/Homescreen/CoffeeProduct';
-import LoyaltyCard from '@/components/Homescreen/LoyaltyCard';
+import LoyaltyCard from '@/components/LoyaltyCard';
 import ToCartButton from '@/components/ToCartButton';
 import ToProfileButton from '@/components/ToProfileButton';
 import { signInAnonymously } from '@/services/supabase/Auth'; // Import the signInAnonymously function
