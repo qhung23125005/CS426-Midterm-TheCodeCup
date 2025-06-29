@@ -4,13 +4,13 @@ import { updateUserInfo } from '@/services/supabase/UpdateUserInfo';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import {
-    FlatList,
-    Modal,
-    Pressable,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
+  FlatList,
+  Modal,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from 'react-native';
 
 type ProfileField = 'Full name' | 'Phone number' | 'Email' | 'Address';
@@ -50,16 +50,37 @@ export default function ProfileScreen() {
     setModalVisible(true);
   };
 
+  const validateInput = (field: ProfileField, value: string) => {
+    const trimmed = value.trim();
+    switch (field) {
+      case 'Email':
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed);
+      case 'Phone number':
+        return /^\+?[0-9]{7,15}$/.test(trimmed);
+      case 'Full name':
+      case 'Address':
+        return trimmed.length > 0;
+      default:
+        return false;
+    }
+  };
+
   const handleSave = () => {
     if (editingField) {
-      setProfileData((prev) => ({ ...prev, [editingField]: tempValue }));
-        updateUserInfo(editingField, tempValue)
-            .then(() => {
-            console.log(`${editingField} updated successfully`);
-            })
-            .catch((error) => {
-            console.error(`Error updating ${editingField}:`, error);
-            });
+      const trimmed = tempValue.trim();
+      if (!validateInput(editingField, trimmed)) {
+        alert(`Please enter a valid ${editingField}.`);
+        return;
+      }
+
+      setProfileData((prev) => ({ ...prev, [editingField]: trimmed }));
+      updateUserInfo(editingField, trimmed)
+        .then(() => {
+          console.log(`${editingField} updated successfully`);
+        })
+        .catch((error) => {
+          console.error(`Error updating ${editingField}:`, error);
+        });
       setModalVisible(false);
     }
   };
@@ -93,7 +114,7 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.container}>
-        <BackButton  />
+      <BackButton />
       <Text style={styles.title}>Profile</Text>
       <FlatList
         data={Object.keys(profileData) as ProfileField[]}
@@ -112,13 +133,30 @@ export default function ProfileScreen() {
               value={tempValue}
               onChangeText={setTempValue}
               multiline={editingField === 'Address'}
+              keyboardType={
+                editingField === 'Email'
+                  ? 'email-address'
+                  : editingField === 'Phone number'
+                  ? 'phone-pad'
+                  : 'default'
+              }
             />
             <View style={styles.modalActions}>
               <Pressable onPress={() => setModalVisible(false)}>
                 <Text style={styles.cancelBtn}>Cancel</Text>
               </Pressable>
-              <Pressable onPress={handleSave}>
-                <Text style={styles.saveBtn}>Save</Text>
+              <Pressable
+                onPress={handleSave}
+                disabled={!validateInput(editingField!, tempValue)}
+              >
+                <Text
+                  style={[
+                    styles.saveBtn,
+                    !validateInput(editingField!, tempValue) && { opacity: 0.5 },
+                  ]}
+                >
+                  Save
+                </Text>
               </Pressable>
             </View>
           </View>
