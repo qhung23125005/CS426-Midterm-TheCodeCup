@@ -26,7 +26,7 @@ export default function TabLayout() {
 
           if (route.name === 'index') iconName = 'home-outline';
           else if (route.name === 'MyOrders') iconName = 'reader-outline';
-          else if (route.name === 'history') iconName = 'calendar-outline';
+          else if (route.name === 'Reward') iconName = 'gift-outline';
 
           return <Ionicons name={iconName} size={size} color={'black'} style={{ opacity: focused ? 1 : 0.3 }} />;
         },
@@ -35,8 +35,8 @@ export default function TabLayout() {
       })}
     >
       <Tabs.Screen name="index" options={{ title: 'Home' }} />
+      <Tabs.Screen name="Reward" options={{ title: 'Reward' }} />
       <Tabs.Screen name="MyOrders" options={{ title: 'MyOrdersScreen' }} />
-      <Tabs.Screen name="history" options={{ title: 'History' }} />
     </Tabs>
   );
 }
