@@ -1,8 +1,11 @@
+import { UserInfoState } from '@/services/store/UserInfoStore'; // Import the UserInfoState type
 import { supabase } from '@/utils/supabase';
+
 
 export async function getUserInformation() {
   try {
     const user_id = await supabase.auth.getUser().then(({ data }) => data.user?.id);
+    const email = await supabase.auth.getUser().then(({ data }) => data.user?.email);
     const { data, error } = await supabase
       .from('User')
       .select('*')
@@ -12,16 +15,15 @@ export async function getUserInformation() {
       console.error('Error fetching user information:', error);
       throw error;
     }
-    const mappedData =  {
-        uid: user_id || null, // Ensure user_id is not undefined
-        userName: data.username || null,
-        phone_number: data.phone_number || null,
-        email: data.email || null,
-        loyaltyPoints: data.loyalty,
-        address: data.address || null,
-        userPoint: data.points || 0, // Default to 0 if user_point is not available
-    } ;
-
+    const mappedData: UserInfoState = {
+      username: data.username || 'Guest',
+      email: email || null,
+      address: data.address || null,
+      phone_number: data.phone_number || null,
+      loyalty: data.loyalty || 0,
+      points: data.points || 0,
+    };
+      // Ensure all fields are present in the UserInfoState type>
     return mappedData; // Return the user object
   } catch (error) {
     console.error('Failed to get user information:', error);

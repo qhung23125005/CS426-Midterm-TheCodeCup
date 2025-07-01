@@ -1,7 +1,7 @@
 import { supabase } from '@/utils/supabase';
 
 export async function updateUserInfo(
-    field: 'Full name' | 'Phone number' | 'Email' | 'Address' | 'User points',
+    field: string,
     value: string
 ): Promise<void> {
     try {
@@ -10,34 +10,12 @@ export async function updateUserInfo(
             throw new Error('User not authenticated');
         }
 
-        const updates: Record<string, any> = {};
-        switch (field) {
-            case 'Full name':
-                updates.username = value;
-                break;
-            case 'Phone number':
-                updates.phone_number = value;
-                break;
-            case 'Email':
-                updates.email = value;
-                break;
-            case 'Address':
-                updates.address = value;
-                break;
-            case 'User points':
-                const points = parseInt(value, 10);
-                if (isNaN(points) || points < 0) {
-                    throw new Error('User loyalty points value');
-                }
-                updates.points = points;
-                break;  
-            default:
-                throw new Error('Invalid field');
-        }
+        const update = {[field]: value
+        };
 
         const { error } = await supabase
             .from('User')
-            .update(updates)
+            .update(update)
             .eq('uid', user_id);
 
         if (error) {

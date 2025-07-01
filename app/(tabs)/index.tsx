@@ -2,10 +2,10 @@ import CoffeeProduct from '@/components/Homescreen/CoffeeProduct';
 import LoyaltyCard from '@/components/LoyaltyCard';
 import ToCartButton from '@/components/ToCartButton';
 import ToProfileButton from '@/components/ToProfileButton';
+import { UserInfoState, useUserInfoStore } from '@/services/store/UserInfoStore'; // Import the UserInfoState type
 import { signInAnonymously } from '@/services/supabase/Auth'; // Import the signInAnonymously function
 import { getCoffeeProduct } from '@/services/supabase/GetCoffeeProduct';
 import { getUserInformation } from '@/services/supabase/GetUserInformation';
-import { useIsFocused } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Colors } from '../../constants/Colors';
@@ -18,40 +18,48 @@ interface CoffeeProduct {
 
 export default function HomeScreen() {
   const [coffeeList, setCoffeeList] = useState<CoffeeProduct[]>([]);
-  const [userName, setUserName] = useState<string | null>("Guest");
-  const [loyaltyStatus, setLoyaltyStatus] = useState<number>(0); // Assuming loyalty status is a number
   const [canOrder, setCanOrder] = useState<boolean>(false); // State to track if the user can order
-  const isFocused = useIsFocused();
+  const userInfo = useUserInfoStore((state: UserInfoState) => state); // Get user info from Zustand store
 
-  useEffect(() => {
-    if (!isFocused) return;
-
-    const init = async () => {
+  const handleSignIn = async () => {
+    try {
       await signInAnonymously();
+    
+    } catch (error) {
+      console.error('Error signing in:', error);
+    }
+  };
 
-      const userInfo = await getUserInformation();
-      setUserName(userInfo.userName || 'Guest');
-      setLoyaltyStatus(userInfo.loyaltyPoints || 0);
-      setCanOrder(!!userInfo.email); // true if email exists
-      const data = await getCoffeeProduct();
-      setCoffeeList(data);
-    };
-
-    init();
-  }, [isFocused]);
+  const updateDataInfo = async () => {
+    try {
+      const data = await getUserInformation();
+      // update Zustand store with user information
+      useUserInfoStore.setState(data);
+      // can only order if phone number and address and name exists
+      setCanOrder(!!userInfo.phone_number && !!userInfo.address && !!userInfo.username);
+    } catch (error) {
+      console.error('Error fetching user information:', error);
+    }
+  }
+  console.log('userInfo', userInfo); // Log user information to check if it is being fetched correctly
+  useEffect(() => {
+    handleSignIn(); // Sign in anonymously when the screen is focused
+    updateDataInfo(); // Update user information when the screen is focused
+    getCoffeeProduct().then(setCoffeeList).catch(console.error);
+  }, []);
   return (
     <View style={{ flex: 1}}>
       <View style={styles.TopContainer}>
         <View style={styles.welcomeContainer}>
           <Text style = {styles.welcomeText}> Good morning </Text>
-          <Text style = {styles.userNameText}> {userName} </Text>
+          <Text style = {styles.userNameText}> {userInfo.username} </Text>
         </View>
         <View style={ styles.IconContainer}>
           <ToCartButton size={24} color="black" style = {{marginRight: '10%'}} />
           <ToProfileButton size = {24} color = "black"  />
         </View>
       </View>
-      <LoyaltyCard status={loyaltyStatus} />
+      <LoyaltyCard status={userInfo.loyalty || 0} />
       <View style={styles.productContainer}>
         <Text style={{ color: 'white', fontSize: 14, marginBottom: '5%', marginLeft: '2%' }}> 
           Choose your coffee
