@@ -1,167 +1,64 @@
 import BackButton from '@/components/BackButton';
-import { getUserInformation } from '@/services/supabase/GetUserInformation';
+import EmailField from '@/components/Profile/EmailField';
+import ProfileFieldItem from '@/components/Profile/ProfileField';
+import { UserInfoState, useUserInfoStore } from '@/services/store/UserInfoStore';
 import { updateUserInfo } from '@/services/supabase/UpdateUserInfo';
-import { Ionicons } from '@expo/vector-icons';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
-  FlatList,
-  Modal,
-  Pressable,
   StyleSheet,
-  Text,
-  TextInput,
-  View,
+  View
 } from 'react-native';
 
-type ProfileField = 'Full name' | 'Phone number' | 'Email' | 'Address';
+type ProfileField = 'name' | 'phone_number' | 'email' | 'address';
 
 export default function ProfileScreen() {
-  const [profileData, setProfileData] = useState<Record<ProfileField, string>>({
-    'Full name': '',
-    'Phone number': '',
-    'Email': '',
-    'Address': '',
-  });
+  const userInfo = useUserInfoStore((state: UserInfoState) => state);
   const [modalVisible, setModalVisible] = useState(false);
-  const [editingField, setEditingField] = useState<ProfileField | null>(null);
+  const [passwordModalVisible, setPasswordModalVisible] = useState(false);
   const [tempValue, setTempValue] = useState('');
+  const [password, setPassword] = useState('');
+  const [editingField, setEditingField] = useState<ProfileField | null>(null);
 
-  const init = async () => {
-    const userInfo = await getUserInformation();
-    if (userInfo) {
-      setProfileData({
-        'Full name': userInfo.userName || '',
-        'Phone number': userInfo.phone_number || '',
-        'Email': userInfo.email || '',
-        'Address': userInfo.address || '',
-      });
-    }
-  };
-
-  useEffect(() => {
-    init().catch((error) => {
-      console.error('Error fetching user information:', error);
-    });
-  }, []);
-
-  const openModal = (field: ProfileField) => {
-    setEditingField(field);
-    setTempValue(profileData[field]);
-    setModalVisible(true);
-  };
-
-  const validateInput = (field: ProfileField, value: string) => {
-    const trimmed = value.trim();
-    switch (field) {
-      case 'Email':
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed);
-      case 'Phone number':
-        return /^\+?[0-9]{7,15}$/.test(trimmed);
-      case 'Full name':
-      case 'Address':
-        return trimmed.length > 0;
-      default:
-        return false;
-    }
-  };
-
-  const handleSave = () => {
-    if (editingField) {
-      const trimmed = tempValue.trim();
-      if (!validateInput(editingField, trimmed)) {
-        alert(`Please enter a valid ${editingField}.`);
-        return;
-      }
-
-      setProfileData((prev) => ({ ...prev, [editingField]: trimmed }));
-      updateUserInfo(editingField, trimmed)
-        .then(() => {
-          console.log(`${editingField} updated successfully`);
-        })
-        .catch((error) => {
-          console.error(`Error updating ${editingField}:`, error);
-        });
-      setModalVisible(false);
-    }
-  };
-
-  const renderItem = ({ item }: { item: ProfileField }) => (
-    <View style={styles.row}>
-      <View style={styles.iconCircle}>
-        <Ionicons
-          name={
-            item === 'Full name'
-              ? 'person-outline'
-              : item === 'Phone number'
-              ? 'call-outline'
-              : item === 'Email'
-              ? 'mail-outline'
-              : 'location-outline'
-          }
-          size={20}
-          color="#64748b"
-        />
-      </View>
-      <View style={styles.textContainer}>
-        <Text style={styles.label}>{item}</Text>
-        <Text style={styles.value}>{profileData[item]}</Text>
-      </View>
-      <Pressable onPress={() => openModal(item)}>
-        <Ionicons name="create-outline" size={20} color="#64748b" />
-      </Pressable>
-    </View>
-  );
 
   return (
     <View style={styles.container}>
       <BackButton />
-      <Text style={styles.title}>Profile</Text>
-      <FlatList
-        data={Object.keys(profileData) as ProfileField[]}
-        renderItem={renderItem}
-        keyExtractor={(item) => item}
-        contentContainerStyle={{ paddingBottom: 20 }}
+      <ProfileFieldItem
+        label="username"
+        label_name="Full name"
+        value={userInfo.username || ''}
+        onValueChange={(value) => updateUserInfo('name', value)}
+        validate={(value) => value.trim().length > 0}
+        iconName="person-outline"
+        isMultiline={false}
+        keyboardType="default"
+        editable={true}
       />
-
-      {/* Modal for editing */}
-      <Modal animationType="slide" transparent visible={modalVisible}>
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalLabel}>Edit {editingField}</Text>
-            <TextInput
-              style={styles.input}
-              value={tempValue}
-              onChangeText={setTempValue}
-              multiline={editingField === 'Address'}
-              keyboardType={
-                editingField === 'Email'
-                  ? 'email-address'
-                  : editingField === 'Phone number'
-                  ? 'phone-pad'
-                  : 'default'
-              }
-            />
-            <View style={styles.modalActions}>
-              <Pressable onPress={() => setModalVisible(false)}>
-                <Text style={styles.cancelBtn}>Cancel</Text>
-              </Pressable>
-              <Pressable
-                onPress={handleSave}
-                disabled={!validateInput(editingField!, tempValue)}
-              >
-                <Text
-                  style={[
-                    styles.saveBtn,
-                    !validateInput(editingField!, tempValue) && { opacity: 0.5 },
-                  ]}
-                >
-                  Save
-                </Text>
-              </Pressable>
-            </View>
-          </View>
-        </View>
-      </Modal>
+      <ProfileFieldItem
+        label="phone_number"
+        label_name="Phone number"
+        value={userInfo.phone_number || ''}
+        onValueChange={(value) => updateUserInfo('phone_number', value)}
+        validate={(value) => /^\+?[0-9]{7,15}$/.test(value.trim())}
+        iconName="call-outline"
+        isMultiline={false}
+        keyboardType="phone-pad"
+        editable={true}
+      />
+      <ProfileFieldItem
+        label="address"
+        label_name="Address"
+        value={userInfo.address || ''}
+        onValueChange={(value) => updateUserInfo('address', value)}
+        validate={(value) => value.trim().length > 0}
+        iconName="location-outline"
+        isMultiline={true}
+        keyboardType="default"
+        editable={true}
+      />
+      
+      <EmailField />
+      
     </View>
   );
 }
