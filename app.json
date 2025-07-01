@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "CS426-Midterm-TheCodeCup",
+    "name": "The Code Cup",
     "slug": "CS426-Midterm-TheCodeCup",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -13,7 +13,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
@@ -29,8 +29,8 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
+          "image": "./assets/images/loadingScreen.png",
+          "imageWidth": "100%",
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
