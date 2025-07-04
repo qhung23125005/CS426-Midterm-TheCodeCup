@@ -18,7 +18,6 @@ interface CoffeeProduct {
 
 export default function HomeScreen() {
   const [coffeeList, setCoffeeList] = useState<CoffeeProduct[]>([]);
-  const [canOrder, setCanOrder] = useState<boolean>(false); // State to track if the user can order
   const userInfo = useUserInfoStore((state: UserInfoState) => state); // Get user info from Zustand store
 
   const handleSignIn = async () => {
@@ -30,13 +29,15 @@ export default function HomeScreen() {
     }
   };
 
+  const canOrder = () => {
+    return !!userInfo.phone_number && !!userInfo.address && !!userInfo.username;
+  }
+
   const updateDataInfo = async () => {
     try {
       const data = await getUserInformation();
       // update Zustand store with user information
       useUserInfoStore.setState(data);
-      // can only order if phone number and address and name exists
-      setCanOrder(!!userInfo.phone_number && !!userInfo.address && !!userInfo.username);
     } catch (error) {
       console.error('Error fetching user information:', error);
     }
@@ -67,7 +68,7 @@ export default function HomeScreen() {
         <ScrollView showsVerticalScrollIndicator={true} style = {{marginBottom:'12%'}}>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}>
           {coffeeList.map((coffee, index) => (
-            <CoffeeProduct key={index} url={coffee.url} name={coffee.name} price = {coffee.price} canOrder = {canOrder} />
+            <CoffeeProduct key={index} url={coffee.url} name={coffee.name} price = {coffee.price} canOrder = {canOrder()} />
           ))}
         </View>
         </ScrollView>
